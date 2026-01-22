@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 export const AddTask = ({ tasklist, setTasklist, task, setTask }) => {
 
   const handleSubmit = (e) => {
