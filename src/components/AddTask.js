@@ -1,46 +1,34 @@
-import { useState, useRef } from "react"
+import { useState } from "react";
 
-export const AddTask = ({tasks, setTasks}) => {
+export const AddTask = ({ tasklist, setTasklist, task, setTask }) => {
 
-    // const[taskValue, setTaskValue] = useState("");
-    const[progress, setProgress] = useState(false);
-    const taskRef = useRef();
-
-    // const handleChange = (e) => {
-    //     console.log(taskRef.current.value);
-    // }
-
-    const handleReset = (event) => {
-        // setTaskValue("");
-        taskRef.current.value="";
-        setProgress(false);
+  const handleSubmit = (e) => {
+    const date = new Date();
+    e.preventDefault();
+    if(task.id) {
+      const updatedTasklist = tasklist.map((todo) => (todo.id === task.id ? 
+      {id:task.id, name: task.name, time: `${date.toLocaleTimeString()} ${date.toLocaleDateString()}`} : todo))
+      setTasklist(updatedTasklist);
     }
-
-    const handleSubmit =(event) => {
-        event.preventDefault();
-        const task ={
-            id: Math.floor(Math.random()*10000),
-            name: taskRef.current.value,
-            completed: Boolean(progress)
-        }
-        setTasks([...tasks, task]);
-        handleReset();
+    else{
+      const newTask = {
+      id:date.getTime(), 
+      name: task.name, 
+      time: `${date.toLocaleTimeString()} ${date.toLocaleDateString()}`
     }
-
-    return (
-        <>
-        <section className="addtask">
-            <form onSubmit={handleSubmit}>
-                <input type="text" name ="task" id="task" placeholder="Task Name" autoComplete="off" ref={taskRef} required/>
-                <select onChange={(e)=> setProgress(e.target.value)} value={progress}>
-                    <option value="true">Completed</option>
-                    <option value="false">Pending</option>
-                </select>
-                <button type="submit">Add Task</button>
-                <button onClick={handleReset} className="reset" type="reset">Reset</button>
-            </form>
-            {/* <p>{taskValue}</p> */}
-        </section>
-        </>
-    )
+      setTasklist([...tasklist, newTask]);
     }
+    setTask({ id: "", name: "" });
+  }
+
+  return (
+    <>
+    <div className="addTask">
+        <form onSubmit={handleSubmit}>
+            <input type="text" name="task" autoComplete="off" placeholder="Add Task" maxLength="25" value={task.name || ""} onChange={e=> setTask({...task, name:e.target.value})}/>
+            <button type="submit">Add</button>
+        </form>
+    </div>
+    </>
+  )
+}
